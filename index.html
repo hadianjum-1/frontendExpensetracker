@@ -2,10 +2,49 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="FinTrack - Professional Expense Tracker. Manage income, expenses, and financial analytics in one place." />
     <title>FinTrack — Expense Tracker Pro</title>
+
+    <!-- GitHub Pages SPA redirect decode script
+         Pairs with public/404.html. Converts the ?p=... query param that
+         404.html encoded back into the real URL before React boots. -->
+    <script>
+      (function () {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+
+      // Decode the ?p= path that 404.html encoded
+      (function () {
+        var search = window.location.search;
+        if (search.slice(1, 3) === 'p=') {
+          var decoded = search
+            .slice(1)
+            .split('&')
+            .reduce(function (memo, part) {
+              var eq = part.indexOf('=');
+              var key = eq >= 0 ? part.slice(0, eq) : part;
+              var val = eq >= 0 ? decodeURIComponent(part.slice(eq + 1)) : '';
+              if (key === 'p') memo.path = val;
+              else if (key === 'q') memo.query = val.replace(/~and~/g, '&');
+              return memo;
+            }, {});
+          // Replace the URL before React Router mounts
+          var base = window.location.pathname.replace(/\/$/, '');
+          window.history.replaceState(
+            null, null,
+            base + (decoded.path || '') +
+            (decoded.query ? '?' + decoded.query : '') +
+            window.location.hash
+          );
+        }
+      })();
+    </script>
     <script type="module" crossorigin src="/frontendExpensetracker/assets/index-DVaqYXqB.js"></script>
     <link rel="stylesheet" crossorigin href="/frontendExpensetracker/assets/index-Dm-jJiB8.css">
   </head>
